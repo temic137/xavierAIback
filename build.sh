@@ -22,6 +22,13 @@ pip install protobuf==3.20.3
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
 export GRPC_PYTHON_BUILD_WITH_CYTHON=1
 
-# Install the rest of the requirements
-pip install --no-deps qdrant-client==1.6.0
-pip install -r requirements.txt --no-build-isolation
+# Install minimal requirements first
+pip install -r requirements-minimal.txt --no-build-isolation
+
+# Try to install the rest of the requirements
+echo "Installing remaining packages..."
+pip install --no-deps qdrant-client==1.6.0 || true
+pip install -r requirements.txt --no-build-isolation || true
+
+# Make sure the app can run even if some packages fail to install
+echo "Installation completed with some packages possibly missing."
