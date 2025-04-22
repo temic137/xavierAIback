@@ -1,0 +1,15 @@
+<div id="chatbot-icon" onclick="toggleChat()" aria-label="Toggle chat"></div>
+<div id="chatbot-container" style="display: none;"></div>
+
+<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot-navbar-modern.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="{{ url_for('static', filename='js/chatbot-navbar-modern.js') }}"></script>
+<script>
+    window.chatbotConfig = {
+        name: "{{ chatbot_name }}",
+        id: "{{ chatbot_id }}",
+        apiUrl: "{{ api_base_url }}chatbot/{{ chatbot_id }}/ask"
+    };
+</script>
