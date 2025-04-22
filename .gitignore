@@ -4,6 +4,8 @@
 
 # Python
 __pycache__/
+*/__pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
 *.so
@@ -47,3 +49,24 @@ logs/
 # Database
 *.sqlite
 *.db
+
+# Vector database files
+faiss_index_*.index
+metadata_*.json
+
+# Test files
+test_*.py
+
+# Temporary files
+*.tmp
+*.bak
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+.ebextensions/
+.ebignore
+
+# Deployment files
+.github/
