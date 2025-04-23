@@ -13,7 +13,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Security settings
-    SECRET_KEY = os.getenv('SECRET_KEY')
+    SECRET_KEY = os.getenv('SECRET_KEY', 'spacex42695')
     SESSION_TYPE = 'filesystem'
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_SAMESITE = 'None'
