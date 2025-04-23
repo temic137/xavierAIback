@@ -1,33 +1,48 @@
-alembic==1.13.3
-beautifulsoup4==4.12.3
-cohere==5.13.4
-faiss_cpu==1.8.0
-fitz==0.0.1.dev2
+# Core dependencies
 Flask==3.1.0
 Flask_Cors==4.0.1
 Flask_Migrate==4.0.7
 Flask_SocketIO==5.3.6
 flask_sqlalchemy==3.1.1
+Werkzeug==3.1.3
+gunicorn==21.2.0
+python-dotenv==1.0.1
+SQLAlchemy==2.0.32
+alembic==1.13.3
+psycopg2-binary==2.9.8
+requests==2.31.0
+
+# gRPC related dependencies - specify versions to avoid build issues
+grpcio==1.54.0
+protobuf==3.20.3
+
+# Google API dependencies
 google_api_python_client==2.149.0
 google_auth_oauthlib==1.2.1
+
+# Database and vector search
+pymongo==4.10.1
+qdrant-client==1.7.3
+faiss_cpu==1.8.0
+rank_bm25==0.2.2
+
+# AI and ML dependencies
+cohere==5.13.4
 groq==0.18.0
-gunicorn==21.2.0
 huggingface_hub==0.26.3
 nltk==3.8.1
 numpy==1.23.5
-protobuf==3.20.3
-psycopg2-binary==2.9.8
-pusher==3.3.2
-pymongo==4.10.1
-pymupdf==1.25.1
-python-dotenv==1.0.1
-qdrant-client==1.6.0
-rank_bm25==0.2.2
-Requests==2.31.0
 scikit_learn==1.1.3
 sentence_transformers==3.0.1
-SpeechRecognition==3.8.1
-SQLAlchemy==2.0.32
 torch==2.5.1
 transformers==4.46.3
-Werkzeug==3.1.3
+
+# PDF and document processing
+fitz==0.0.1.dev2
+pymupdf==1.25.1
+beautifulsoup4==4.12.3
+
+# Other utilities
+SpeechRecognition==3.8.1
+pusher==3.3.2
+resend==0.7.2
