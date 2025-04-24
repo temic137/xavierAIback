@@ -1,10 +1,29 @@
 
 
+# [phases.setup]
+# nixPkgs = ['python311', 'postgresql_16.dev', 'gcc']  # Use Python 3.11
+
+# [phases.install]
+# cmds = ['python -m venv --copies /opt/venv', '. /opt/venv/bin/activate', 'pip install --timeout=1200 -r requirements.txt']
+
+# [start]
+# cmd = 'gunicorn --bind 0.0.0.0:$PORT app:app'
+
+
+
+
+[build]
+nixpacksVersion = "1.29.1"
+
 [phases.setup]
-nixPkgs = ['python311', 'postgresql_16.dev', 'gcc']  # Use Python 3.11
+nixPkgs = ['python311', 'postgresql_16.dev', 'gcc', 'libffi', 'openssl', 'portaudio', 'mupdf']
 
 [phases.install]
-cmds = ['python -m venv --copies /opt/venv', '. /opt/venv/bin/activate', 'pip install --timeout=1200 -r requirements.txt']
+cmds = [
+  'python -m venv --copies /opt/venv',
+  '. /opt/venv/bin/activate',
+  'pip install --timeout=1200 --retries=5 --cache-dir=/root/.cache/pip --index-url=https://pypi.cloudflare.com/simple -r requirements.txt'
+]
 
 [start]
 cmd = 'gunicorn --bind 0.0.0.0:$PORT app:app'
