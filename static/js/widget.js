@@ -66,6 +66,20 @@
     line-height: normal;
 }
 
+.chatbot-notification-dot {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 14px;
+    height: 14px;
+    background-color: #FF5252;
+    border-radius: 50%;
+    border: 2px solid white;
+    display: none;
+    animation: notificationPop 0.5s ease-out forwards;
+    z-index: 2;
+}
+
 .chatbot-toggle {
     background: var(--theme-color, #0066CC);
     color: white;
@@ -81,11 +95,15 @@
     align-items: center;
     justify-content: center;
     margin-left: auto;
+    animation: chatBubblePulse 2s infinite, chatBubbleBounce 1s ease-out, chatBubbleFloat 3s ease-in-out infinite, chatBubbleWiggle 5s ease-in-out infinite;
+    animation-delay: 0s, 0s, 1s, 2s;
+    position: relative;
 }
 
 .chatbot-toggle:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    animation-play-state: paused;
 }
 
 .chatbot-toggle svg {
@@ -760,6 +778,40 @@
     50% { opacity: 1; transform: translateY(-2px); }
 }
 
+@keyframes chatBubblePulse {
+    0% { box-shadow: 0 0 0 0 rgba(var(--theme-color-rgb, 0, 102, 204), 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(var(--theme-color-rgb, 0, 102, 204), 0); }
+    100% { box-shadow: 0 0 0 0 rgba(var(--theme-color-rgb, 0, 102, 204), 0); }
+}
+
+@keyframes chatBubbleBounce {
+    0% { transform: scale(0.5); opacity: 0; }
+    50% { transform: scale(1.1); }
+    70% { transform: scale(0.95); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes chatBubbleFloat {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0px); }
+}
+
+@keyframes chatBubbleWiggle {
+    0%, 100% { transform: rotate(0deg); }
+    85% { transform: rotate(0deg); }
+    90% { transform: rotate(-10deg); }
+    95% { transform: rotate(10deg); }
+    97.5% { transform: rotate(-5deg); }
+    100% { transform: rotate(0deg); }
+}
+
+@keyframes notificationPop {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
 @media (max-width: 480px) {
     .chatbot-container {
         right: 10px;
@@ -779,6 +831,21 @@
         // Set theme color as CSS variable
         document.documentElement.style.setProperty('--theme-color', config.themeColor);
 
+        // Extract RGB values from hex color for pulse animation
+        const hexToRgb = (hex) => {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        };
+
+        const rgb = hexToRgb(config.themeColor);
+        if (rgb) {
+            document.documentElement.style.setProperty('--theme-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+        }
+
         console.log('CSS styles applied successfully');
     }
 
@@ -794,6 +861,7 @@
         widget.innerHTML = `
             <div id="chatbot-widget" class="chatbot-container">
                 <button id="chatbot-toggle" class="chatbot-toggle" aria-label="Toggle chat">
+                    <span class="chatbot-notification-dot"></span>
                     <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path d="M20 2H4C2.9 2 2 2.9 2 4V18C2 19.1 2.9 20 4 20H6V24L12 20H20C21.1 20 22 19.1 22 18V4C22 2.9 21.1 2 20 2ZM7 11C6.45 11 6 10.55 6 10C6 9.45 6.45 9 7 9C7.55 9 8 9.45 8 10C8 10.55 7.55 11 7 11ZM12 11C11.45 11 11 10.55 11 10C11 9.45 11.45 9 12 9C12.55 9 13 9.45 13 10C13 10.55 12.55 11 12 11ZM17 11C16.45 11 16 10.55 16 10C16 9.45 16.45 9 17 9C17.55 9 18 9.45 18 10C18 10.55 17.55 11 17 11Z"/>
                     </svg>
@@ -972,6 +1040,16 @@
             isCreatingTicket: false,
             currentTicketField: null,
 
+            // Show notification dot after a delay
+            showNotificationDot() {
+                setTimeout(() => {
+                    const notificationDot = document.querySelector('.chatbot-notification-dot');
+                    if (notificationDot) {
+                        notificationDot.style.display = 'block';
+                    }
+                }, 5000); // Show after 5 seconds
+            },
+
             // Helper function to adjust color brightness (kept for potential future use)
             adjustColor(color, amount) {
                 const hex = color.replace('#', '');
@@ -995,10 +1073,17 @@
             toggle() {
                 const content = document.getElementById('chatbot-content');
                 const toggle = document.getElementById('chatbot-toggle');
+                const notificationDot = document.querySelector('.chatbot-notification-dot');
+
                 content.classList.toggle('chatbot-visible');
                 toggle.style.display = content.classList.contains('chatbot-visible') ? 'none' : 'flex';
+
                 if (content.classList.contains('chatbot-visible')) {
                     document.getElementById('chatbot-input').focus();
+                    // Hide notification dot when chat is opened
+                    if (notificationDot) {
+                        notificationDot.style.display = 'none';
+                    }
                 }
             },
 
@@ -1561,8 +1646,14 @@
 
     // Initialize the widget when the DOM is fully loaded
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeWidget);
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeWidget();
+            // Show notification dot after initialization
+            setTimeout(() => window.chatbotWidget.showNotificationDot(), 1000);
+        });
     } else {
         initializeWidget();
+        // Show notification dot after initialization
+        setTimeout(() => window.chatbotWidget.showNotificationDot(), 1000);
     }
 })();
