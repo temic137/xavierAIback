@@ -1,5 +1,4 @@
-
-# from flask import Flask, send_from_directory, request
+# from flask import Flask, send_from_directory, request, jsonify
 # from flask_cors import CORS
 # from flask_sqlalchemy import SQLAlchemy
 # from config import Config
@@ -11,6 +10,7 @@
 # from routes.email_service import email_bp
 # import os
 # import logging
+# import time
 # from logging_config import configure_logging
 # from flask_migrate import Migrate
 # from sqlalchemy import Text
@@ -30,20 +30,24 @@
 #          resources={
 #              # For public endpoints (widget, static files, etc.)
 #              r"/static/*": {
-#                  "origins": ["https://xavierai.site","https://xavierai-m-2.vercel.app"],  # Allow all origins for static resources
+#                  "origins": "*",  # Allow all origins for static resources
 #                  "methods": ["GET"],
 #                  "supports_credentials": False,  # No credentials needed for static resources
 #                  "max_age": 86400
 #              },
 #              r"/get_chatbot_script/*": {
-#                  "origins":["https://xavierai.site","https://xavierai-m-2.vercel.app"],  # Allow all origins for the script
+#                  "origins": "*",  # Allow all origins for the script
 #                  "methods": ["GET"],
 #                  "supports_credentials": False,
 #                  "max_age": 86400
 #              },
 #              # For authenticated endpoints
 #              r"/*": {
-#                  "origins": ["https://xavierai.site","https://xavierai-m-2.vercel.app"],
+#                  "origins": [
+#                     "http://localhost:4200",  # Angular dev server
+#                     "http://localhost:5000",  # Flask dev server
+#                     "https://xavierai-m-2.vercel.app",  # Production frontend
+#                  ],
 #                  "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
 #                  "allow_headers": ["Content-Type", "Authorization", "X-CSRFToken", "User-ID"],
 #                  "expose_headers": ["Content-Type", "Authorization", "X-CSRFToken"],
@@ -96,6 +100,23 @@
 # # Create the app instance for Gunicorn
 # app = create_app()
 
+# # Add health check endpoint for Render
+# @app.route('/health')
+# def health_check():
+#     try:
+#         # Check database connection
+#         with app.app_context():
+#             db.session.execute('SELECT 1')
+#             db_status = "connected"
+#     except Exception as e:
+#         db_status = f"error: {str(e)}"
+
+#     return jsonify({
+#         "status": "healthy",
+#         "database": db_status,
+#         "timestamp": time.time()
+#     })
+
 # # Configure logging
 # configure_logging(app)
 
@@ -135,11 +156,6 @@
 
 
 
-
-
-
-
-
 from flask import Flask, send_from_directory, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -165,6 +181,9 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    # Set a strong secret key for session security
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'a8e7d4f2c1b9e6a3d8c5b2e9f7a4d1c8e5b2a9f7d4e1c8b5a2f7e4d1c8b5a3f6'
+
     # Configuration is loaded from Config class
 
     # Configure CORS with all necessary settings
@@ -189,6 +208,8 @@ def create_app():
                     "http://localhost:4200",  # Angular dev server
                     "http://localhost:5000",  # Flask dev server
                     "https://xavierai-m-2.vercel.app",  # Production frontend
+                    "https://xavierai.site",  # Main production frontend
+                    "https://www.xavierai.site",  # www subdomain
                  ],
                  "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
                  "allow_headers": ["Content-Type", "Authorization", "X-CSRFToken", "User-ID"],
