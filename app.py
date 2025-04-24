@@ -30,24 +30,20 @@ def create_app():
          resources={
              # For public endpoints (widget, static files, etc.)
              r"/static/*": {
-                 "origins": "*",  # Allow all origins for static resources
+                 "origins": ["https://xavierai.site","https://xavierai-m-2.vercel.app"],  # Allow all origins for static resources
                  "methods": ["GET"],
                  "supports_credentials": False,  # No credentials needed for static resources
                  "max_age": 86400
              },
              r"/get_chatbot_script/*": {
-                 "origins": "*",  # Allow all origins for the script
+                 "origins":["https://xavierai.site","https://xavierai-m-2.vercel.app"],  # Allow all origins for the script
                  "methods": ["GET"],
                  "supports_credentials": False,
                  "max_age": 86400
              },
              # For authenticated endpoints
              r"/*": {
-                 "origins": [
-                    "http://localhost:4200",  # Angular dev server
-                    "http://localhost:5000",  # Flask dev server
-                    "https://xavierai-m-2.vercel.app",  # Production frontend
-                 ],
+                 "origins": ["https://xavierai.site","https://xavierai-m-2.vercel.app"],
                  "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
                  "allow_headers": ["Content-Type", "Authorization", "X-CSRFToken", "User-ID"],
                  "expose_headers": ["Content-Type", "Authorization", "X-CSRFToken"],
