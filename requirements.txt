@@ -8,17 +8,17 @@ Flask_Cors==4.0.1
 Flask_Migrate==4.0.7
 Flask_SocketIO==5.3.6
 flask_sqlalchemy==3.1.1
-google_api_core==2.19.1  # Pinned to a recent compatible version
+google_api_core==2.19.1
 google_api_python_client==2.149.0
 google_auth_oauthlib==1.2.1
-google-cloud-firestore==2.17.0  # Required by firebase_admin
-google-cloud-storage==2.18.2  # Required by firebase_admin
+google-cloud-firestore==2.17.0
+google-cloud-storage==2.18.2
 groq==0.18.0
 gunicorn==21.2.0
 huggingface_hub==0.26.3
 nltk==3.8.1
 numpy==1.23.5
-protobuf==3.20.3
+protobuf==4.25.3  # Updated to resolve conflict
 psycopg2-binary==2.9.8
 pusher==3.3.2
 pymongo==4.10.1
