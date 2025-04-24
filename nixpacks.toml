@@ -3,6 +3,8 @@ nixPkgs = ["python310", "gcc", "python310Packages.pip", "python310Packages.setup
 
 [phases.install]
 cmds = [
+  "python -m venv /opt/venv",
+  "source /opt/venv/bin/activate",
   "pip install --upgrade pip",
   "pip install -r back/requirements.txt",
   "pip install gunicorn"
@@ -10,13 +12,15 @@ cmds = [
 
 [phases.build]
 cmds = [
+  "source /opt/venv/bin/activate",
   "cd back",
   "python -m compileall xavier_back"
 ]
 
 [start]
-cmd = "cd back && gunicorn --bind 0.0.0.0:$PORT 'xavier_back.app:create_app()'"
+cmd = "source /opt/venv/bin/activate && cd back && gunicorn --bind 0.0.0.0:$PORT 'xavier_back.app:create_app()'"
 
 [variables]
 PYTHONUNBUFFERED = "1"
 PYTHONPATH = "."
+PATH = "/opt/venv/bin:${PATH}"
