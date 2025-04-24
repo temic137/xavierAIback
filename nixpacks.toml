@@ -1,0 +1,22 @@
+[phases.setup]
+nixPkgs = ["python310", "gcc", "python310Packages.pip", "python310Packages.setuptools", "python310Packages.wheel", "postgresql", "libffi", "openssl"]
+
+[phases.install]
+cmds = [
+  "pip install --upgrade pip",
+  "pip install -r back/requirements.txt",
+  "pip install gunicorn"
+]
+
+[phases.build]
+cmds = [
+  "cd back",
+  "python -m compileall xavier_back"
+]
+
+[start]
+cmd = "cd back && gunicorn --bind 0.0.0.0:$PORT 'xavier_back.app:create_app()'"
+
+[variables]
+PYTHONUNBUFFERED = "1"
+PYTHONPATH = "."
