@@ -1,37 +1,10 @@
-# [phases.setup]
-# nixPkgs = ["python310", "gcc", "python310Packages.pip", "python310Packages.setuptools", "python310Packages.wheel", "postgresql", "libffi", "openssl"]
-
-# [phases.install]
-# cmds = [
-#   "python -m venv /opt/venv",
-#   "source /opt/venv/bin/activate",
-#   "pip install --upgrade pip",
-#   "pip install -r requirements.txt",
-#   "pip install gunicorn"
-# ]
-
-# [phases.build]
-# cmds = [
-#   "source /opt/venv/bin/activate",
-#   "cd back",
-#   "python -m compileall xavier_back"
-# ]
-
-# [start]
-# cmd = "source /opt/venv/bin/activate && cd back && gunicorn --bind 0.0.0.0:$PORT 'xavier_back.app:create_app()'"
-
-# [variables]
-# PYTHONUNBUFFERED = "1"
-# PYTHONPATH = "."
-# PATH = "/opt/venv/bin:${PATH}"
-
 
 
 [phases.setup]
 nixPkgs = ['python311', 'postgresql_16.dev', 'gcc']  # Use Python 3.11
 
 [phases.install]
-cmds = ['python -m venv --copies /opt/venv', '. /opt/venv/bin/activate', 'pip install -r requirements.txt']
+cmds = ['python -m venv --copies /opt/venv', '. /opt/venv/bin/activate', 'pip install --timeout=600 -r requirements.txt']
 
 [start]
 cmd = 'gunicorn --bind 0.0.0.0:$PORT app:app'
